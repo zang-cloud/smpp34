@@ -2,6 +2,7 @@ package smpp34
 
 import (
 	"time"
+	"log"
 )
 
 type Transmitter struct {
@@ -55,6 +56,7 @@ func (t *Transmitter) Bind(system_id string, password string, params *Params) er
 	}
 
 	if pdu.GetHeader().Id != BIND_TRANSMITTER_RESP {
+		log.Print("PDU ", pdu)
 		return SmppBindRespErr
 	}
 

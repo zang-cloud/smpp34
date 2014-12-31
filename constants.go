@@ -5,7 +5,7 @@ const (
 	SMPP_VERSION = 0x34
 
 	// Max PDU size to minimize some attack vectors
-	MAX_PDU_SIZE = 4096 // 4KB
+	MAX_PDU_SIZE = 1024*4 // 4KB
 
 	// Sequence number start/end
 	SEQUENCE_NUM_START = 0x00000001

@@ -7,6 +7,7 @@ import (
 	"net"
 	"strconv"
 	"sync"
+	"errors"
 )
 
 var Debug bool
@@ -48,6 +49,10 @@ func NewSmppConnect(host string, port int) (*Smpp, error) {
 	err := s.Connect(host, port)
 
 	return s, err
+}
+
+func (s *Smpp) SetConn(conn net.Conn) {
+	s.conn = conn
 }
 
 func (s *Smpp) Connect(host string, port int) (err error) {
@@ -140,14 +145,27 @@ func (s *Smpp) SubmitSm(source_addr, destination_addr, short_message string, par
 	p.SetField(SHORT_MESSAGE, short_message)
 
 	for f, v := range *params {
-		err := p.SetField(f, v)
-
-		if err != nil {
+		err := p.SetField(f, v); if err != nil {
 			return nil, err
 		}
 	}
 
 	return p, nil
+}
+
+func (s *Smpp) SubmitSmResp(seq uint32, status CMDStatus, messageId string) (Pdu, error) {
+	p, _ := NewSubmitSmResp(
+		&Header{
+			Id:       SUBMIT_SM_RESP,
+			Status:   status,
+			Sequence: seq,
+		},
+		[]byte{},
+	)
+
+	p.SetField(MESSAGE_ID, messageId)
+
+	return Pdu(p), nil
 }
 
 func (s *Smpp) QuerySm(message_id, source_addr string, params *Params) (Pdu, error) {
@@ -164,9 +182,7 @@ func (s *Smpp) QuerySm(message_id, source_addr string, params *Params) (Pdu, err
 	p.SetField(SOURCE_ADDR, source_addr)
 
 	for f, v := range *params {
-		err := p.SetField(f, v)
-
-		if err != nil {
+		err := p.SetField(f, v); if err != nil {
 			return nil, err
 		}
 	}
@@ -229,8 +245,9 @@ func (s *Smpp) Read() (Pdu, error) {
 	}
 
 	pduLength := unpackUi32(l) - 4
+
 	if pduLength > MAX_PDU_SIZE {
-		return nil, SmppPduSizeErr
+		return nil, errors.New(fmt.Sprintf("%s -> (max_size: %d) < (pdu_size: %d)", SmppPduSizeErr, MAX_PDU_SIZE, pduLength))
 	}
 
 	data := make([]byte, pduLength)

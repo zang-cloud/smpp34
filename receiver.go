@@ -40,6 +40,7 @@ func NewReceiver(host string, port int, eli int, bindParams Params) (*Receiver, 
 
 func (t *Receiver) Bind(system_id string, password string, params *Params) error {
 	pdu, err := t.Smpp.Bind(BIND_RECEIVER, system_id, password, params)
+	
 	if err := t.Write(pdu); err != nil {
 		return err
 	}
