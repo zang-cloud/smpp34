@@ -1,7 +1,7 @@
 SMPP34
 ======
 
-Check [examples](https://github.com/CodeMonkeyKevin/smpp34/tree/master/examples) folder for usage details
+Check [examples](https://github.com/TelAPI/smpp34/tree/master/examples) folder for usage details
 
 ##### Supported/Unsupported PDUs
 - [x] bind_transmitter
@@ -39,4 +39,4 @@ It is licensed under the MIT license. Please see the LICENSE file for applicable
 
 ## Author
 
-[Kevin Patel](https://github.com/CodeMonkeyKevin)
+[Kevin Patel](https://github.com/TelAPI)
