@@ -33,7 +33,7 @@ func NewTransceiver(host string, port int, eli int, bindParams Params) (*Transce
 
 	trx.eLDuration = eli
 
-	go trx.startEnquireLink(eli)
+	// go trx.StartEnquireLink(eli)
 
 	return trx, nil
 }
@@ -137,7 +137,7 @@ func (t *Transceiver) bindCheck() {
 	}
 }
 
-func (t *Transceiver) startEnquireLink(eli int) {
+func (t *Transceiver) StartEnquireLink(eli int) {
 	t.eLTicker = time.NewTicker(time.Duration(eli) * time.Second)
 	// check delay is half the time of enquire link intervel
 	d := time.Duration(eli/2) * time.Second
@@ -155,7 +155,9 @@ func (t *Transceiver) startEnquireLink(eli int) {
 				return
 			}
 
-			t.eLCheckTimer.Reset(d)
+			if t.eLCheckTimer != nil {
+				t.eLCheckTimer.Reset(d)
+			}
 		case <-t.eLCheckTimer.C:
 			t.Err = SmppELRespErr
 			t.Close()
@@ -189,7 +191,9 @@ func (t *Transceiver) Read() (Pdu, error) {
 		}
 	case ENQUIRE_LINK_RESP:
 		// Reset EnquireLink Check
-		t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		if t.eLCheckTimer != nil {
+			t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		}
 	case UNBIND:
 		t.UnbindResp(pdu.GetHeader().Sequence)
 		t.Close()

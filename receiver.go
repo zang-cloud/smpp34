@@ -33,14 +33,14 @@ func NewReceiver(host string, port int, eli int, bindParams Params) (*Receiver, 
 
 	rx.eLDuration = eli
 
-	go rx.startEnquireLink(eli)
+	// go rx.StartEnquireLink(eli)
 
 	return rx, nil
 }
 
 func (t *Receiver) Bind(system_id string, password string, params *Params) error {
 	pdu, err := t.Smpp.Bind(BIND_RECEIVER, system_id, password, params)
-	
+
 	if err := t.Write(pdu); err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func (t *Receiver) bindCheck() {
 	}
 }
 
-func (t *Receiver) startEnquireLink(eli int) {
+func (t *Receiver) StartEnquireLink(eli int) {
 	t.eLTicker = time.NewTicker(time.Duration(eli) * time.Second)
 	// check delay is half the time of enquire link intervel
 	d := time.Duration(eli/2) * time.Second
@@ -136,7 +136,9 @@ func (t *Receiver) startEnquireLink(eli int) {
 				return
 			}
 
-			t.eLCheckTimer.Reset(d)
+			if t.eLCheckTimer != nil {
+				t.eLCheckTimer.Reset(d)
+			}
 		case <-t.eLCheckTimer.C:
 			t.Err = SmppELRespErr
 			t.Close()
@@ -170,7 +172,9 @@ func (t *Receiver) Read() (Pdu, error) {
 		}
 	case ENQUIRE_LINK_RESP:
 		// Reset EnquireLink Check
-		t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		if t.eLCheckTimer != nil {
+			t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		}
 	case UNBIND:
 		t.UnbindResp(pdu.GetHeader().Sequence)
 		t.Close()

@@ -1,8 +1,8 @@
 package smpp34
 
 import (
-	"time"
 	"log"
+	"time"
 )
 
 type Transmitter struct {
@@ -34,7 +34,7 @@ func NewTransmitter(host string, port int, eli int, bindParams Params) (*Transmi
 
 	tx.eLDuration = eli
 
-	go tx.startEnquireLink(eli)
+	// go tx.StartEnquireLink(eli)
 
 	return tx, nil
 }
@@ -133,7 +133,7 @@ func (t *Transmitter) bindCheck() {
 	}
 }
 
-func (t *Transmitter) startEnquireLink(eli int) {
+func (t *Transmitter) StartEnquireLink(eli int) {
 	t.eLTicker = time.NewTicker(time.Duration(eli) * time.Second)
 	// check delay is half the time of enquire link intervel
 	d := time.Duration(eli/2) * time.Second
@@ -151,7 +151,9 @@ func (t *Transmitter) startEnquireLink(eli int) {
 				return
 			}
 
-			t.eLCheckTimer.Reset(d)
+			if t.eLCheckTimer != nil {
+				t.eLCheckTimer.Reset(d)
+			}
 		case <-t.eLCheckTimer.C:
 			t.Err = SmppELRespErr
 			t.Close()
@@ -187,7 +189,9 @@ func (t *Transmitter) Read() (Pdu, error) {
 		}
 	case ENQUIRE_LINK_RESP:
 		// Reset EnquireLink Check
-		t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		if t.eLCheckTimer != nil {
+			t.eLCheckTimer.Reset(time.Duration(t.eLDuration) * time.Second)
+		}
 	case UNBIND:
 		t.UnbindResp(pdu.GetHeader().Sequence)
 		t.Close()
