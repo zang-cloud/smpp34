@@ -1,6 +1,7 @@
 package smpp34
 
 import (
+	"log"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func NewReceiver(host string, port int, eli int, bindParams Params) (*Receiver, 
 
 	rx.eLDuration = eli
 
-	// go rx.StartEnquireLink(eli)
+	go rx.StartEnquireLink(eli)
 
 	return rx, nil
 }
@@ -131,6 +132,7 @@ func (t *Receiver) StartEnquireLink(eli int) {
 
 			p, _ := t.EnquireLink()
 			if err := t.Write(p); err != nil {
+				log.Println("[Receiver.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
 				t.Err = SmppELWriteErr
 				t.Close()
 				return
@@ -140,6 +142,7 @@ func (t *Receiver) StartEnquireLink(eli int) {
 				t.eLCheckTimer.Reset(d)
 			}
 		case <-t.eLCheckTimer.C:
+			log.Println("[Receiver.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
 			t.Err = SmppELRespErr
 			t.Close()
 			return

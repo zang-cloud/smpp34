@@ -34,7 +34,7 @@ func NewTransmitter(host string, port int, eli int, bindParams Params) (*Transmi
 
 	tx.eLDuration = eli
 
-	// go tx.StartEnquireLink(eli)
+	go tx.StartEnquireLink(eli)
 
 	return tx, nil
 }
@@ -56,7 +56,6 @@ func (t *Transmitter) Bind(system_id string, password string, params *Params) er
 	}
 
 	if pdu.GetHeader().Id != BIND_TRANSMITTER_RESP {
-		log.Print("PDU ", pdu)
 		return SmppBindRespErr
 	}
 
@@ -146,6 +145,7 @@ func (t *Transmitter) StartEnquireLink(eli int) {
 
 			p, _ := t.EnquireLink()
 			if err := t.Write(p); err != nil {
+				log.Println("[Transmitter.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
 				t.Err = SmppELWriteErr
 				t.Close()
 				return
@@ -156,6 +156,7 @@ func (t *Transmitter) StartEnquireLink(eli int) {
 			}
 		case <-t.eLCheckTimer.C:
 			t.Err = SmppELRespErr
+			log.Println("[Transmitter.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
 			t.Close()
 			return
 		}

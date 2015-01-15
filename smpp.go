@@ -3,11 +3,11 @@ package smpp34
 import (
 	"bufio"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"net"
 	"strconv"
 	"sync"
-	"errors"
 )
 
 var Debug bool
@@ -108,6 +108,7 @@ func (s *Smpp) BindResp(cmdId CMDId, seq uint32, status CMDStatus, sysId string)
 }
 
 func (s *Smpp) EnquireLink() (Pdu, error) {
+	log.Println("Smpp.EnquireLink called")
 	p, _ := NewEnquireLink(
 		&Header{
 			Id:       ENQUIRE_LINK,
@@ -145,7 +146,8 @@ func (s *Smpp) SubmitSm(source_addr, destination_addr, short_message string, par
 	p.SetField(SHORT_MESSAGE, short_message)
 
 	for f, v := range *params {
-		err := p.SetField(f, v); if err != nil {
+		err := p.SetField(f, v)
+		if err != nil {
 			return nil, err
 		}
 	}
@@ -182,7 +184,8 @@ func (s *Smpp) QuerySm(message_id, source_addr string, params *Params) (Pdu, err
 	p.SetField(SOURCE_ADDR, source_addr)
 
 	for f, v := range *params {
-		err := p.SetField(f, v); if err != nil {
+		err := p.SetField(f, v)
+		if err != nil {
 			return nil, err
 		}
 	}
