@@ -108,7 +108,6 @@ func (s *Smpp) BindResp(cmdId CMDId, seq uint32, status CMDStatus, sysId string)
 }
 
 func (s *Smpp) EnquireLink() (Pdu, error) {
-	log.Println("Smpp.EnquireLink called")
 	p, _ := NewEnquireLink(
 		&Header{
 			Id:       ENQUIRE_LINK,
