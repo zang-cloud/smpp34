@@ -216,7 +216,7 @@ func (s *Smpp) UnbindResp(seq uint32) (Pdu, error) {
 
 func (s *Smpp) DeliverSm(source_addr, destination_addr, short_message string, params *Params) (Pdu, error) {
 
-	p, _ := NewSubmitSm(
+	p, _ := NewDeliverSm(
 		&Header{
 			Id:       DELIVER_SM,
 			Sequence: s.NewSeqNum(),
