@@ -214,6 +214,30 @@ func (s *Smpp) UnbindResp(seq uint32) (Pdu, error) {
 	return Pdu(p), nil
 }
 
+func (s *Smpp) DeliverSm(source_addr, destination_addr, short_message string, params *Params) (Pdu, error) {
+
+	p, _ := NewSubmitSm(
+		&Header{
+			Id:       DELIVER_SM,
+			Sequence: s.NewSeqNum(),
+		},
+		[]byte{},
+	)
+
+	p.SetField(SOURCE_ADDR, source_addr)
+	p.SetField(DESTINATION_ADDR, destination_addr)
+	p.SetField(SHORT_MESSAGE, short_message)
+
+	for f, v := range *params {
+		err := p.SetField(f, v)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return p, nil
+}
+
 func (s *Smpp) DeliverSmResp(seq uint32, status CMDStatus) (Pdu, error) {
 	p, _ := NewDeliverSmResp(
 		&Header{
