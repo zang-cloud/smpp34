@@ -232,6 +232,11 @@ func (t *Transceiver) Close() {
 		t.eLTicker.Stop()
 	}
 
+	// Make sure we unbind if we are binded first BEFORE we do any connection closure
+	if t.Bound {
+		t.Unbind()
+	}
+
 	t.Smpp.Close()
 }
 
