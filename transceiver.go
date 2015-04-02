@@ -96,8 +96,8 @@ func (t *Transceiver) DeliverSm(source_addr, destination_addr, short_message str
 	return p.GetHeader().Sequence, nil
 }
 
-func (t *Transceiver) DeliverSmResp(seq uint32, status CMDStatus) error {
-	p, err := t.Smpp.DeliverSmResp(seq, status)
+func (t *Transceiver) DeliverSmResp(seq uint32, status CMDStatus, params *Params) error {
+	p, err := t.Smpp.DeliverSmResp(seq, status, params)
 
 	if err != nil {
 		return err

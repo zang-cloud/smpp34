@@ -238,7 +238,7 @@ func (s *Smpp) DeliverSm(source_addr, destination_addr, short_message string, pa
 	return p, nil
 }
 
-func (s *Smpp) DeliverSmResp(seq uint32, status CMDStatus) (Pdu, error) {
+func (s *Smpp) DeliverSmResp(seq uint32, status CMDStatus, params *Params) (Pdu, error) {
 	p, _ := NewDeliverSmResp(
 		&Header{
 			Id:       DELIVER_SM_RESP,
@@ -247,6 +247,13 @@ func (s *Smpp) DeliverSmResp(seq uint32, status CMDStatus) (Pdu, error) {
 		},
 		[]byte{},
 	)
+
+	for f, v := range *params {
+		err := p.SetField(f, v)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	return Pdu(p), nil
 }

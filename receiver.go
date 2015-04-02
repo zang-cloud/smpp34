@@ -73,8 +73,8 @@ func (t *Receiver) SubmitSm(source_addr, destination_addr, short_message string,
 	return 0, SmppPduErr
 }
 
-func (t *Receiver) DeliverSmResp(seq uint32, status CMDStatus) error {
-	p, err := t.Smpp.DeliverSmResp(seq, status)
+func (t *Receiver) DeliverSmResp(seq uint32, status CMDStatus, params *Params) error {
+	p, err := t.Smpp.DeliverSmResp(seq, status, params)
 
 	if err != nil {
 		return err
