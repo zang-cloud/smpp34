@@ -8,6 +8,8 @@ import (
 	"net"
 	"strconv"
 	"sync"
+
+	"git.teltech.co/TelAPI/shorty/logger"
 )
 
 var Debug bool
@@ -295,6 +297,15 @@ func (s *Smpp) Read() (Pdu, error) {
 	}
 
 	pkt := append(l, data...)
+
+	logger.Debug("--------------------------------------------------------------")
+	logger.Debug("PDU (byte-array: %#v)", pkt)
+	logger.Debug("PDU (bytes: %v)", pkt)
+	logger.Debug("PDU (full string: %s)", pkt)
+	//logger.Debug("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
+	logger.Debug("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
+	logger.Debug("--------------------------------------------------------------")
+
 	if Debug {
 		fmt.Println(hex.Dump(pkt))
 	}

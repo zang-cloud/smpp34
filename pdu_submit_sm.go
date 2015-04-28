@@ -2,6 +2,8 @@ package smpp34
 
 import (
 	"bytes"
+
+	"git.teltech.co/TelAPI/shorty/logger"
 )
 
 var (
@@ -36,6 +38,8 @@ type SubmitSm struct {
 
 func NewSubmitSm(hdr *Header, b []byte) (*SubmitSm, error) {
 	r := bytes.NewBuffer(b)
+
+	logger.Debug("Buffer received: %q", b)
 
 	fields, tlvs, err := create_pdu_fields(reqSSMFields, r)
 
