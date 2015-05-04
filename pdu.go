@@ -3,8 +3,11 @@ package smpp34
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"io"
 	"reflect"
+
+	"git.teltech.co/TelAPI/shorty/logger"
 )
 
 const (
@@ -104,6 +107,7 @@ func create_pdu_fields(fieldNames []string, r *bytes.Buffer) (map[string]Field, 
 
 	fields := make(map[string]Field)
 	eof := false
+
 	for _, k := range fieldNames {
 		switch k {
 		case SERVICE_TYPE, SOURCE_ADDR, DESTINATION_ADDR, SCHEDULE_DELIVERY_TIME, VALIDITY_PERIOD, SYSTEM_ID, PASSWORD, SYSTEM_TYPE, ADDRESS_RANGE, MESSAGE_ID, FINAL_DATE, MESSAGE_STATE, ERROR_CODE:
@@ -128,6 +132,44 @@ func create_pdu_fields(fieldNames []string, r *bytes.Buffer) (map[string]Field, 
 				eof = true
 			} else if err != nil {
 				return nil, nil, err
+			}
+
+			if k == ESM_CLASS {
+
+				// Setting up messaging mode
+				for n, v := range ESM_MESSAGING_MODES {
+					if fmt.Sprintf("%08b", t)[6:8] == v {
+						fields[ESM_MESSAGE_MODE] = NewVariableField([]byte(n))
+					}
+				}
+
+				// Setting up messaging mode
+				for n, v := range ESM_MESSAGE_TYPES {
+					if fmt.Sprintf("%08b", t)[2:6] == v {
+						fields[ESM_MESSAGE_TYPE] = NewVariableField([]byte(n))
+					}
+				}
+
+				// Setting up network type.
+				switch t {
+				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_DEFAULT]:
+					logger.Debug("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_DEFAULT)
+					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_DEFAULT))
+
+				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_UDHI]:
+					logger.Debug("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI)
+					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_UDHI))
+
+				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_REPLY]:
+					logger.Debug("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_REPLY)
+					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_REPLY))
+
+				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_UDHI_REPLY]:
+					logger.Debug("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI_REPLY)
+					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_UDHI_REPLY))
+
+				}
+
 			}
 
 			fields[k] = NewFixedField(t)

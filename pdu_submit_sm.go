@@ -17,6 +17,9 @@ var (
 		DEST_ADDR_NPI,
 		DESTINATION_ADDR,
 		ESM_CLASS,
+		ESM_MESSAGE_MODE,
+		ESM_MESSAGE_TYPE,
+		ESM_GSM_NETWORK_TYPE,
 		PROTOCOL_ID,
 		PRIORITY_FLAG,
 		SCHEDULE_DELIVERY_TIME,
@@ -42,6 +45,8 @@ func NewSubmitSm(hdr *Header, b []byte) (*SubmitSm, error) {
 	logger.Debug("Buffer received: %q", b)
 
 	fields, tlvs, err := create_pdu_fields(reqSSMFields, r)
+
+	logger.Debug("PDU fields: %q", fields)
 
 	if err != nil {
 		return nil, err

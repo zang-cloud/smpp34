@@ -5,7 +5,7 @@ const (
 	SMPP_VERSION = 0x34
 
 	// Max PDU size to minimize some attack vectors
-	MAX_PDU_SIZE = 1024*4 // 4KB
+	MAX_PDU_SIZE = 1024 * 4 // 4KB
 
 	// Sequence number start/end
 	SEQUENCE_NUM_START = 0x00000001
@@ -96,6 +96,52 @@ const (
 )
 
 const (
+
+	// SMSC Available Messaging Modes (bits 1-0)
+	ESM_MESSAGING_MODE_DEFAULT       = "smsc_mode_default"       // xxxxxx00
+	ESM_MESSAGING_MODE_DATAGRAM      = "smsc_mode_datagram"      // xxxxxx01
+	ESM_MESSAGING_MODE_FORWARD       = "smsc_mode_forward"       // xxxxxx10
+	ESM_MESSAGING_MDOE_STORE_FORWARD = "smsc_mode_store_forward" // xxxxxx11
+
+	// SMSC Supported Message Type (bits 5-2)
+	ESM_MESSAGE_TYPE_DEFAULT      = "smsc_message_type_default"    // xx0000xx
+	ESM_MESSAGE_TYPE_DELIVERY_ACK = "smsc_message_type_auto_ack"   // xx0010xx
+	ESM_MESSAGE_TYPE_MANUAL_ACK   = "smsc_message_type_manual_ack" // xx0100xx
+
+	// SMSC GSM Network Specific Features (bits 7-6)
+	ESM_GSM_FEATURE_DEFAULT    = "smsc_gsm_feature_default"    // 00xxxxxx
+	ESM_GSM_FEATURE_UDHI       = "smsc_gsm_feature_udhi"       // 01xxxxxx
+	ESM_GSM_FEATURE_REPLY      = "smsc_gsm_feature_reply"      // 10xxxxxx
+	ESM_GSM_FEATURE_UDHI_REPLY = "smsc_gsm_feature_udhi_reply" // 11xxxxxx
+
+)
+
+var (
+
+	// ESM_MESSAGING_MODES List of available messaging modes
+	ESM_MESSAGING_MODES = map[string]string{
+		ESM_MESSAGING_MODE_DEFAULT:       "00",
+		ESM_MESSAGING_MODE_DATAGRAM:      "01",
+		ESM_MESSAGING_MODE_FORWARD:       "10",
+		ESM_MESSAGING_MDOE_STORE_FORWARD: "11",
+	}
+
+	// ESM_MESSAGE_TYPES List of available message types
+	ESM_MESSAGE_TYPES = map[string]string{
+		ESM_MESSAGE_TYPE_DEFAULT:      "0000",
+		ESM_MESSAGE_TYPE_DELIVERY_ACK: "0010",
+		ESM_MESSAGE_TYPE_MANUAL_ACK:   "0100",
+	}
+
+	ESM_GSM_FEATURES = map[string]byte{
+		ESM_GSM_FEATURE_DEFAULT:    0x00,
+		ESM_GSM_FEATURE_UDHI:       0x40,
+		ESM_GSM_FEATURE_REPLY:      0x80,
+		ESM_GSM_FEATURE_UDHI_REPLY: 0xc0,
+	}
+)
+
+const (
 	// FIELDS
 	SYSTEM_ID               = "system_id"
 	PASSWORD                = "password"
@@ -105,13 +151,16 @@ const (
 	ADDR_NPI                = "addr_npi"
 	ADDRESS_RANGE           = "address_range"
 	SERVICE_TYPE            = "service_type"
-	SOURCE_ADDR_TON         = "source_addr_ton"
-	SOURCE_ADDR_NPI         = "source_addr_npi"
+	SOURCE_ADDR_TON         = "source_addr_ton" // type of number (originator)
+	SOURCE_ADDR_NPI         = "source_addr_npi" // number plan indicator (originator)
 	SOURCE_ADDR             = "source_addr"
 	DEST_ADDR_TON           = "dest_addr_ton"
 	DEST_ADDR_NPI           = "dest_addr_npi"
 	DESTINATION_ADDR        = "destination_addr"
 	ESM_CLASS               = "esm_class"
+	ESM_MESSAGE_MODE        = "esm_message_mode"
+	ESM_MESSAGE_TYPE        = "esm_message_type"
+	ESM_GSM_NETWORK_TYPE    = "esm_gsm_network_type"
 	PROTOCOL_ID             = "protocol_id"
 	PRIORITY_FLAG           = "priority_flag"
 	SCHEDULE_DELIVERY_TIME  = "schedule_delivery_time"
