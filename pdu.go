@@ -195,7 +195,23 @@ func create_pdu_fields(fieldNames []string, r *bytes.Buffer) (map[string]Field, 
 				return nil, nil, err
 			}
 
-			fields[SHORT_MESSAGE] = NewSMField(p)
+			msg := p
+
+			for fi, va := range fields {
+				if fi == ESM_GSM_NETWORK_TYPE {
+					if va.String() == ESM_GSM_FEATURE_UDHI {
+
+						// How many is there to count :)
+						udhip := int(p[0]) + 1
+
+						logger.Debug("This message is part of concat (header_len: %d) - (headers: %#v) - (message: %s)", udhip, p[:udhip], p[udhip:])
+
+						msg = p[udhip:]
+					}
+				}
+			}
+
+			fields[SHORT_MESSAGE] = NewSMField(msg)
 		case SHORT_MESSAGE:
 			continue
 		}
