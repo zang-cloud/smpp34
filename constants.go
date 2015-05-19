@@ -176,3 +176,26 @@ const (
 	MESSAGE_STATE           = "message_state"
 	ERROR_CODE              = "error_code"
 )
+
+const (
+	// Used for source/destination type of number
+	TON_UNKNOWN           = 0 // 00000000
+	TON_INTERNATIONAL     = 1 // 00000001
+	TON_NATIONAL          = 2 // 00000010
+	TON_NETWORK_SPECIFIC  = 3 // 00000011
+	TON_SUBSCRIBER_NUMBER = 4 // 00000100
+	TON_ALPHANUMERIC      = 5 // 00000101
+	TON_ABBREVIATED       = 6 // 00000110
+
+	// Used for source/destination numeric plan indicator NPI
+	NPI_UNKNOWN     = 0  // 00000000
+	NPI_ISDN        = 1  // 00000001 - E.163 - E.164
+	NPI_DATA        = 3  // 00000011 - X.121
+	NPI_TELEX       = 4  // 00000100 - F.69
+	NPI_LAND_MOBILE = 6  // 00000110 - E.212
+	NPI_NATIONAL    = 8  // 00001000
+	NPI_PRIVATE     = 9  // 00001001
+	NPI_ERMES       = 10 // 00001010
+	NPI_IP          = 14 // 00001110
+	NPI_WAP         = 18 // 00010010
+)
