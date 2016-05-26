@@ -3,7 +3,7 @@ package smpp34
 import (
 	"bytes"
 
-	"git.teltech.co/TelAPI/shorty/logger"
+	"github.com/zang-cloud/shorty/logger"
 )
 
 var (

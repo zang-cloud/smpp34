@@ -7,7 +7,7 @@ import (
 	"io"
 	"reflect"
 
-	"git.teltech.co/TelAPI/shorty/logger"
+	"github.com/zang-cloud/shorty/logger"
 )
 
 const (

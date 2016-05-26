@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"sync"
 
-	"git.teltech.co/TelAPI/shorty/logger"
+	"github.com/zang-cloud/shorty/logger"
 )
 
 var Debug bool
