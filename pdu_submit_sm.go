@@ -3,7 +3,7 @@ package smpp34
 import (
 	"bytes"
 
-	"github.com/zang-cloud/shorty/logger"
+	"log"
 )
 
 var (
@@ -42,11 +42,11 @@ type SubmitSm struct {
 func NewSubmitSm(hdr *Header, b []byte) (*SubmitSm, error) {
 	r := bytes.NewBuffer(b)
 
-	logger.Debug("Buffer received: %q", b)
+	log.Printf("Buffer received: %q", b)
 
 	fields, tlvs, err := create_pdu_fields(reqSSMFields, r)
 
-	logger.Debug("PDU fields: %q", fields)
+	log.Printf("PDU fields: %q", fields)
 
 	if err != nil {
 		return nil, err

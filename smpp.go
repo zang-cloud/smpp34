@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/zang-cloud/shorty/logger"
+	"log"
 )
 
 var Debug bool
@@ -298,13 +298,13 @@ func (s *Smpp) Read() (Pdu, error) {
 
 	pkt := append(l, data...)
 
-	logger.Debug("--------------------------------------------------------------")
-	logger.Debug("PDU (byte-array: %#v)", pkt)
-	logger.Debug("PDU (bytes: %v)", pkt)
-	logger.Debug("PDU (full string: %s)", pkt)
-	//logger.Debug("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
-	logger.Debug("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
-	logger.Debug("--------------------------------------------------------------")
+	log.Printf("--------------------------------------------------------------")
+	log.Printf("PDU (byte-array: %#v)", pkt)
+	log.Printf("PDU (bytes: %v)", pkt)
+	log.Printf("PDU (full string: %s)", pkt)
+	//log.Printf("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
+	log.Printf("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
+	log.Printf("--------------------------------------------------------------")
 
 	if Debug {
 		fmt.Println(hex.Dump(pkt))
