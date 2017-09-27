@@ -24,7 +24,6 @@ var (
 		SM_DEFAULT_MSG_ID,
 		SM_LENGTH,
 		SHORT_MESSAGE,
-		MESSAGE_ID,
 	}
 )
 
