@@ -1,7 +1,7 @@
 package smpp34
 
 import (
-	"log"
+	log "github.com/Sirupsen/logrus"
 	"time"
 )
 
@@ -83,11 +83,13 @@ func (t *Transceiver) SubmitSm(source_addr, destination_addr, short_message stri
 }
 
 func (t *Transceiver) DeliverSm(source_addr, destination_addr, short_message string, params *Params) (seq uint32, err error) {
+	log.Debug("Transceiver: DeliverSM")
 	p, err := t.Smpp.DeliverSm(source_addr, destination_addr, short_message, params)
-
 	if err != nil {
+		log.Debug("Transceiver: DeliverSm failed ", err)
 		return 0, err
 	}
+	log.Debug("Transceiver: writing response")
 
 	if err := t.Write(p); err != nil {
 		return 0, err
@@ -165,7 +167,7 @@ func (t *Transceiver) StartEnquireLink(eli int) {
 
 			p, _ := t.EnquireLink()
 			if err := t.Write(p); err != nil {
-				log.Println("[Transceiver.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
+				log.Debugln("[Transceiver.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
 				t.Err = SmppELWriteErr
 				t.Close()
 				return
@@ -175,7 +177,7 @@ func (t *Transceiver) StartEnquireLink(eli int) {
 				t.eLCheckTimer.Reset(d)
 			}
 		case <-t.eLCheckTimer.C:
-			log.Println("[Transceiver.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
+			log.Debugln("[Transceiver.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
 			t.Err = SmppELRespErr
 			t.Close()
 			return

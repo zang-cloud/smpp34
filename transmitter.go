@@ -1,7 +1,7 @@
 package smpp34
 
 import (
-	"log"
+	log "github.com/Sirupsen/logrus"
 	"time"
 )
 
@@ -145,7 +145,7 @@ func (t *Transmitter) StartEnquireLink(eli int) {
 
 			p, _ := t.EnquireLink()
 			if err := t.Write(p); err != nil {
-				log.Println("[Transmitter.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
+				log.Debugln("[Transmitter.StartEnquireLink] error writing EnquireLink. Closing connection:", err)
 				t.Err = SmppELWriteErr
 				t.Close()
 				return
@@ -156,7 +156,7 @@ func (t *Transmitter) StartEnquireLink(eli int) {
 			}
 		case <-t.eLCheckTimer.C:
 			t.Err = SmppELRespErr
-			log.Println("[Transmitter.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
+			log.Debugln("[Transmitter.StartEnquireLink] timeout waiting for EnquireLinkResp. Closing connection:")
 			t.Close()
 			return
 		}

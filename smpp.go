@@ -5,11 +5,10 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"net"
 	"strconv"
 	"sync"
-
-	"log"
 )
 
 var Debug bool
@@ -218,6 +217,7 @@ func (s *Smpp) UnbindResp(seq uint32) (Pdu, error) {
 
 func (s *Smpp) DeliverSm(source_addr, destination_addr, short_message string, params *Params) (Pdu, error) {
 
+	log.Debug("smpp.DeliverSm: entry")
 	p, _ := NewDeliverSm(
 		&Header{
 			Id:       DELIVER_SM,
@@ -226,13 +226,17 @@ func (s *Smpp) DeliverSm(source_addr, destination_addr, short_message string, pa
 		[]byte{},
 	)
 
+	log.Debug("smpp.DeliverSm: created PDU")
+
 	p.SetField(SOURCE_ADDR, source_addr)
 	p.SetField(DESTINATION_ADDR, destination_addr)
 	p.SetField(SHORT_MESSAGE, short_message)
 
+	log.Debug("smpp.DeliverSm: set fields")
 	for f, v := range *params {
 		err := p.SetField(f, v)
 		if err != nil {
+			log.Debugf("Set field failed: err=%v; field=%v, value=%v", err, f, v)
 			return nil, err
 		}
 	}
@@ -298,13 +302,13 @@ func (s *Smpp) Read() (Pdu, error) {
 
 	pkt := append(l, data...)
 
-	log.Printf("--------------------------------------------------------------")
-	log.Printf("PDU (byte-array: %#v)", pkt)
-	log.Printf("PDU (bytes: %v)", pkt)
-	log.Printf("PDU (full string: %s)", pkt)
-	//log.Printf("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
-	log.Printf("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
-	log.Printf("--------------------------------------------------------------")
+	log.Debugf("--------------------------------------------------------------")
+	//	log.Debugf("PDU (byte-array: %#v)", pkt)
+	log.Debugf("PDU (bytes: %v)", pkt)
+	//	log.Debugf("PDU (full string: %s)", pkt)
+	//log.Debugf("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
+	//	log.Debugf("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
+	log.Debugf("--------------------------------------------------------------")
 
 	if Debug {
 		fmt.Println(hex.Dump(pkt))

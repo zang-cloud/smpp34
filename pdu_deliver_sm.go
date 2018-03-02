@@ -2,6 +2,7 @@ package smpp34
 
 import (
 	"bytes"
+	log "github.com/Sirupsen/logrus"
 )
 
 var (
@@ -39,6 +40,7 @@ func NewDeliverSm(hdr *Header, b []byte) (*DeliverSm, error) {
 	fields, tlvs, err := create_pdu_fields(reqDSMFields, r)
 
 	if err != nil {
+		log.Error("NewDeliverSm failed ", err)
 		return nil, err
 	}
 

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"io"
-	"log"
 	"reflect"
 )
 
@@ -152,19 +152,19 @@ func create_pdu_fields(fieldNames []string, r *bytes.Buffer) (map[string]Field, 
 				// Setting up network type.
 				switch t {
 				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_DEFAULT]:
-					log.Printf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_DEFAULT)
+					log.Debugf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_DEFAULT)
 					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_DEFAULT))
 
 				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_UDHI]:
-					log.Printf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI)
+					log.Debugf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI)
 					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_UDHI))
 
 				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_REPLY]:
-					log.Printf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_REPLY)
+					log.Debugf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_REPLY)
 					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_REPLY))
 
 				case ESM_GSM_FEATURES[ESM_GSM_FEATURE_UDHI_REPLY]:
-					log.Printf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI_REPLY)
+					log.Debugf("Setting up GSM_NETWORK_TYPE to: %s", ESM_GSM_FEATURE_UDHI_REPLY)
 					fields[ESM_GSM_NETWORK_TYPE] = NewVariableField([]byte(ESM_GSM_FEATURE_UDHI_REPLY))
 
 				}
@@ -203,7 +203,7 @@ func create_pdu_fields(fieldNames []string, r *bytes.Buffer) (map[string]Field, 
 						// How many is there to count :)
 						udhip := int(p[0]) + 1
 
-						log.Printf("This message is part of concat (header_len: %d) - (headers: %#v) - (message: %s)", udhip, p[:udhip], p[udhip:])
+						log.Debugf("This message is part of concat (header_len: %d) - (headers: %#v) - (message: %s)", udhip, p[:udhip], p[udhip:])
 
 						msg = p[udhip:]
 					}
