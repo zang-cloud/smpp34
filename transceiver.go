@@ -186,6 +186,7 @@ func (t *Transceiver) StartEnquireLink(eli int) {
 }
 
 func (t *Transceiver) Read() (Pdu, error) {
+	log.Debug("Transceiver READ")
 	pdu, err := t.Smpp.Read()
 	if err != nil {
 		if _, ok := err.(PduCmdIdErr); ok {
@@ -203,6 +204,7 @@ func (t *Transceiver) Read() (Pdu, error) {
 	case SUBMIT_SM_RESP, DELIVER_SM:
 		return pdu, nil
 	case ENQUIRE_LINK:
+		log.Debug("Transceiver ENQ")
 		p, _ := t.Smpp.EnquireLinkResp(pdu.GetHeader().Sequence)
 
 		if err := t.Write(p); err != nil {

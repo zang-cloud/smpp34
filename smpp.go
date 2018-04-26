@@ -277,6 +277,7 @@ func (s *Smpp) GenericNack(seq uint32, status CMDStatus) (Pdu, error) {
 }
 
 func (s *Smpp) Read() (Pdu, error) {
+	log.Debug("SMPP READ")
 	l := make([]byte, 4)
 	_, err := s.conn.Read(l)
 	if err != nil {
@@ -302,17 +303,18 @@ func (s *Smpp) Read() (Pdu, error) {
 
 	pkt := append(l, data...)
 
-	log.Debugf("--------------------------------------------------------------")
+	log.Debug("PDU Read:")
+	log.Debug("--------------------------------------------------------------")
 	//	log.Debugf("PDU (byte-array: %#v)", pkt)
-	log.Debugf("PDU (bytes: %v)", pkt)
-	//	log.Debugf("PDU (full string: %s)", pkt)
-	//log.Debugf("PDU hex (dump: \n%v\n)", hex.Dump(pkt))
+	//log.Debugf("%v", pkt)
+	//log.Debugf("PDU (full string: %s)", pkt)
+	log.Debug(hex.Dump(pkt))
 	//	log.Debugf("PDU hex (encoded: %v)", hex.EncodeToString(pkt))
-	log.Debugf("--------------------------------------------------------------")
+	//	log.Debug("--------------------------------------------------------------")
 
-	if Debug {
-		fmt.Println(hex.Dump(pkt))
-	}
+	//	if Debug {
+	//		fmt.Println(hex.Dump(pkt))
+	//	}
 
 	pdu, err := ParsePdu(pkt)
 	if err != nil {
@@ -325,9 +327,10 @@ func (s *Smpp) Read() (Pdu, error) {
 func (s *Smpp) Write(p Pdu) error {
 	_, err := s.conn.Write(p.Writer())
 
-	if Debug {
-		fmt.Println(hex.Dump(p.Writer()))
-	}
+	log.Debug("PDU Write:")
+	log.Debug("--------------------------------------------------------------")
+	log.Debug(hex.Dump(p.Writer()))
+	//	log.Debug("--------------------------------------------------------------")
 
 	return err
 }
